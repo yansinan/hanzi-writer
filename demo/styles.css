@@ -47,13 +47,18 @@ button, #target {
 	gap: 0; /* 无间隙 */
 }
 
-.row {
+.word {
 	display: flex;
+	flex:0 0 0; /* 不允许增长或缩小，保持固定大小 */
 	justify-content:center; /* 保证格子均匀分布 */
 	margin-bottom: 75px; /* 行间距 */
+	margin-right: 150px;
 	height: 150px;
 }
-
+.row {
+	flex:1 0 100%;
+	margin-right: 0;
+}
 .cell {
 	flex: none;
 	width: 150px; /* 固定宽度 */

@@ -38,10 +38,51 @@ function printStrokePoints(data) {
 //     });
 //   }
 // }
+function $getCell(){
+  // 生成格子模板
+  const cell = document.createElement('div'); // 创建一个格子
+  cell.classList.add('cell'); // 添加格子的类名
+  return cell;
+}
+// 生成格子模板
+const $cell = $getCell(); // 创建一个格子
 
-function funSetCharactor(id,char){
+// 占整行的DOM模板
+function $getBlock(char,rowIndex){
+  const $word = document.createElement('div'); // 创建一块
+  $word.classList.add('word'); // 添加行的类名
+  // 以行为单位
+  $word.strCharacter=char; // 存储当前行的字符
+  $word.list$Writer=[]; // 存储当前行的 HanziWriter 实例列表
+  //再分字
+  $word.listStrChar=char.split('');
 
-  const writer = HanziWriter.create(id, char, {
+  const listStrChar=$word.listStrChar
+  // 如果是词语
+  if(listStrChar.length>1){
+      
+  }else if(listStrChar.length==1){
+    // 如果是单个字
+    $word.classList.add('row'); // 添加行的类名
+
+  }else{
+    
+  }  
+  const cellDFragment = document.createDocumentFragment('div'); // 创建一个格子
+
+  for (let i = 0; i < (listStrChar.length>1?listStrChar.length:10); i++) { // 每行 10 个字  
+    var $c=$cell.cloneNode(true)
+    $c.id = `writer-${rowIndex}-${i}`; // 为每个格子设置唯一 ID
+    $c.char=listStrChar[i]?listStrChar[i]:listStrChar[0]; // 存储当前格子的字符  
+    $word.list$Writer[i]=cellDFragment.appendChild($c);
+  }
+  $word.appendChild(cellDFragment);
+  return $word;
+}
+
+function funSetCharactor($c){
+  // console.debug($c.id,$c.char);
+  const writer = HanziWriter.create($c.id, $c.char, {
     width: '150', // px
     height: '150', // px
     showOutline: true,
@@ -56,55 +97,19 @@ function funSetCharactor(id,char){
   writer.quiz();
   return writer;
 }
-function generateRow(char,rowIndex){
-  const row = document.createElement('div'); // 创建一行
-  row.classList.add('row'); // 添加行的类名
-  target.appendChild(row);
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const cell = document.createElement('div'); // 创建一个格子
-      cell.classList.add('cell'); // 添加格子的类名
+function generateBlock(char,rowIndex){
 
-      const cellDFragment = document.createDocumentFragment('div'); // 创建一个格子
+  const $word=target.appendChild($getBlock(char,rowIndex)); 
 
-      for (let i = 0; i < 10; i++) { // 每行 10 个字
-
-        var c=cell.cloneNode(true)
-        c.id = `writer-${rowIndex}-${i}`; // 为每个格子设置唯一 ID
-        c=cellDFragment.appendChild(c);
-        // c.addEventListener('click', function () {
-        //   funSetCharactor(this.id,"书");
-        //   console.debug(this.id);
-        // });    
-        
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // 创建 HanziWriter 实例
-            funSetCharactor(`writer-${rowIndex}-${i}`,char)
-          })
-        });
-      }
-      row.appendChild(cellDFragment);
-
-      
-      // // 生成第一个字
-      // setTimeout(() => {
-      //     // 创建 HanziWriter 实例
-      //     console.debug(`writer-${rowIndex}-${0}`,row.offsetHeight);
-      //     funSetCharactor(`writer-${rowIndex}-${0}`,char)
-      // },10000)
-
-    })
-  });
-
-
+  $word.list$Writer.forEach(funSetCharactor);
 }
 function generatePracticeSheet() {
   const input = document.querySelector('.js-char').value.trim();
   const target = document.querySelector('#target');
   target.innerHTML = ''; // 清空之前的内容
-
-  input.split('').forEach(generateRow);
+  // 先分词
+  const listWords = input.split(/\s+/); // 以空格分词
+  listWords.forEach(generateBlock);
 }
 
 window.onload = function () {
