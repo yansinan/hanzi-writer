@@ -39,7 +39,14 @@ button, #target {
 	width: 400px;
 	height: 400px;
 	margin: 0 auto;
+	position: relative; /* 保留相对定位 */
+	overflow: hidden; /* 确保内容不会溢出 */
+	background-image: url('grid-background.svg'); /* 引用外部 SVG 文件 */
+	background-size: 100% 100%; /* 自适应铺满 */
+	background-repeat: no-repeat;
 }
+
+/* 确保没有其他样式覆盖 SVG */
 
 .char-form {
 	margin: 0 0 20px;

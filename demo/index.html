@@ -13,23 +13,24 @@
 		<form class="js-char-form char-form">
 			<label>
 				Character
-				<input type="text" class="js-char char-input" size="1" maxlength="1" value="我" />
+				<input type="text" class="js-char char-input" size="2" maxlength="10" value="我" />
 			</label>
-			<button type="submit">Update</button>
+			<!-- 移除提交按钮 -->
 		</form>
 		<div class="actions">
 			<button class="js-toggle">Show/hide</button>
 			<button class="js-toggle-hint">Outline on/off</button>
 			<button class="js-animate">Animate</button>
-			<button class="js-quiz">Quiz yourself</button>
 		</div>
 
 		<div id="target">
-
+			 <!-- 背景通过外部 SVG 文件加载 -->
 		</div>
-
+		
 		<!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
-		<script type="application/javascript" src="../dist/hanzi-writer.js"></script>
+		<!-- <script type="application/javascript" src="../dist/hanzi-writer.js"></script> -->
+		<!-- <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script> -->
+		<script src="https://unpkg.com/hanzi-writer@3.0.3/dist/hanzi-writer.min.js"></script>
 		<script type="application/javascript" src="test.js"></script>
 
 	</body>

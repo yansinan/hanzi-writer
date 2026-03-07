@@ -26,6 +26,19 @@ function updateCharacter() {
   window.writer = writer;
 }
 
+function updateCharacterFromInput() {
+  const input = document.querySelector('.js-char');
+  const firstChar = input.value.trim().charAt(0); // 提取首个汉字
+  if (firstChar) {
+    input.value = firstChar; // 保留首个汉字
+    updateCharacter(); // 更新显示
+
+    writer.quiz({
+      showOutline: true,
+    });
+  }
+}
+
 window.onload = function () {
   var char = decodeURIComponent(window.location.hash.slice(1));
   if (char) {
@@ -34,10 +47,8 @@ window.onload = function () {
 
   updateCharacter();
 
-  document.querySelector('.js-char-form').addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    updateCharacter();
-  });
+  // 添加文本框输入完成事件监听
+  document.querySelector('.js-char').addEventListener('blur', updateCharacterFromInput);
 
   document.querySelector('.js-toggle').addEventListener('click', function () {
     isCharVisible ? writer.hideCharacter() : writer.showCharacter();
@@ -50,9 +61,5 @@ window.onload = function () {
   document.querySelector('.js-animate').addEventListener('click', function () {
     writer.animateCharacter();
   });
-  document.querySelector('.js-quiz').addEventListener('click', function () {
-    writer.quiz({
-      showOutline: true,
-    });
-  });
+
 };
