@@ -40,17 +40,18 @@ function printStrokePoints(data) {
 // }
 
 function funSetCharactor(id,char){
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
 
-    })
-  });
   const writer = HanziWriter.create(id, char, {
     width: '150', // px
     height: '150', // px
     showOutline: true,
     showCharacter: false,
     renderer: 'svg',
+    // undocumented obscure options
+    drawingFadeDuration: 300,
+    drawingWidth: 40,
+    strokeWidth: 2,
+    outlineWidth: 2,
   });
   writer.quiz();
   return writer;
