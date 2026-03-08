@@ -40,9 +40,20 @@ function printStrokePoints(data) {
 // }
 function $getCell(){
   // 生成格子模板
-  const cell = document.createElement('div'); // 创建一个格子
-  cell.classList.add('cell'); // 添加格子的类名
-  return cell;
+  
+  const $cell = document.createElement('div',{class: 'cell'}); // 创建一个格子
+  $cell.classList.add('cell'); // 添加格子的类名
+
+  const $pinyin = document.createElement('div',{"class": 'pinyin'}); // 创建一个格子
+  $pinyin.classList.add('pinyin'); // 添加格子的类名
+  $cell.appendChild($pinyin);
+
+  const $char = document.createElement('div',{class: 'char'}); // 创建一个格子
+  $char.classList.add('char'); // 添加格子的类名
+  $cell.appendChild($char);
+
+
+  return $cell;
 }
 // 生成格子模板
 const $cell = $getCell(); // 创建一个格子
@@ -73,19 +84,30 @@ function $getBlock(char,rowIndex){
   for (let i = 0; i < (listStrChar.length>1?listStrChar.length:10); i++) { // 每行 10 个字  
     var $c=$cell.cloneNode(true)
     $c.id = `writer-${rowIndex}-${i}`; // 为每个格子设置唯一 ID
-    $c.char=listStrChar[i]?listStrChar[i]:listStrChar[0]; // 存储当前格子的字符  
-    $word.list$Writer[i]=cellDFragment.appendChild($c);
+    $c.char=listStrChar[i]?listStrChar[i]:listStrChar[0]; // 存储当前格子的字符
+    $c.pinyin=pinyinUtil.getPinyin($c.char);  
+    $c.getElementsByClassName("pinyin")[0].innerText=$c.pinyin; // 显示拼音
+
+    $c.$writer=$c.getElementsByClassName("char")[0];
+    cellDFragment.appendChild($c);
+
+    $word.list$Writer[i]= $c// 存储当前格子的 char 元素
   }
   $word.appendChild(cellDFragment);
   return $word;
 }
 
 function funSetCharactor($c){
-  // console.debug($c.id,$c.char);
-  const writer = HanziWriter.create($c.id, $c.char, {
+  $c.$writer=$c.getElementsByClassName("char")[0];
+  console.debug($c.id,$c.char,$c.pinyin);
+
+  const writer = HanziWriter.create($c.$writer, $c.char, {
     width: '150', // px
     height: '150', // px
-    showOutline: true,
+    radicalColor: '#166E16',
+    onCorrectStroke: printStrokePoints,
+    onMistake: printStrokePoints,
+    showOutline: $c.parentNode.classList.contains('row'),
     showCharacter: false,
     renderer: 'svg',
     // undocumented obscure options
@@ -103,6 +125,7 @@ function generateBlock(char,rowIndex){
 
   $word.list$Writer.forEach(funSetCharactor);
 }
+
 function generatePracticeSheet() {
   const input = document.querySelector('.js-char').value.trim();
   const target = document.querySelector('#target');
