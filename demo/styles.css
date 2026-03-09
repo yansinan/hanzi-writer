@@ -78,6 +78,9 @@ button, #target {
 .row .cell .pinyin{
 	visibility: hidden;
 }
+.row .cell.first .pinyin{
+	visibility: visible;
+}
 .cell .char {
 	flex: none;
 	width: 100%; /* 固定宽度 */
@@ -87,6 +90,11 @@ button, #target {
 	background-repeat: no-repeat;
 	border: solid 1px #444;
 	box-sizing: border-box; /* 包括边框在内计算大小 */
+}
+.cell .char svg path.dashed{
+    /* stroke-dasharray: 30, 40; */
+    /* stroke-width: 10; */
+	stroke:#ddd;
 }
 
 .char-form {
