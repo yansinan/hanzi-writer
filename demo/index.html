@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en-us">
 	<head>
 		<meta charset="utf-8">
@@ -26,7 +26,16 @@
 		<div id="target">
 			 <!-- 背景通过外部 SVG 文件加载 -->
 		</div>
-		
+		<!-- 
+		<script>
+			// 动态加载polyfill解决文件协议下的CORS
+			if (window.location.protocol === 'file:') {
+				document.write('<script src="https://unpkg.com/es-module-shims@1.7.0"><\/script>');
+				document.write('<script type="importmap-shim">{"imports": {"./DOMPracticeSheet.js": "./DOMPracticeSheet.js"}}<\/script>');
+			}
+		</script>
+		<script type="module-shim" src="DOMPracticeSheet.js"></script>
+		 -->
 		<!-- <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
 		<!-- <script type="application/javascript" src="../dist/hanzi-writer.js"></script> -->
 		<!-- <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script> -->
@@ -34,7 +43,8 @@
 
 		<script type="text/javascript" src="pinyin_dict_withtone.js"></script>
 		<script type="text/javascript" src="pinyinUtil.js"></script>
-		<script type="application/javascript" src="test.js"></script>
+		<script type="module" src="./DOMPracticeSheet.js"></script>
+		<script type="module" src="./test.js"></script>
 
 	</body>
 </html>
