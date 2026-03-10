@@ -1,5 +1,5 @@
 // import HanziWriter from "hanzi-writer";
-
+import "./StrokeQualityScorer.js";
 
 class PracticeCellHelper{
     
@@ -54,15 +54,15 @@ class PracticeCellHelper{
     initWriter(){
         const $c=this.$cell;
         $c.$writer=$c.getElementsByClassName("char")[0];
-        console.debug($c.params,$c.id);
+        // console.debug($c.params,$c.id);
         const defaultOptions = {
             width: '150', // px
             height: '150', // px
             radicalColor: '#166E16',
             // outlineColor:"#ff000000" ,
             // strokeColor:"#0f0",
-            onCorrectStroke: this.onCorrectStroke.bind($c),
-            onMistake: this.onMistakeStroke.bind($c),
+            onCorrectStroke: this.onCorrectStroke.bind(this),
+            onMistake: this.onMistakeStroke.bind(this),
             showOutline: $c.parentNode.classList.contains('row'),
             showCharacter: false,
             renderer: 'svg',
@@ -71,7 +71,7 @@ class PracticeCellHelper{
             drawingWidth: 40,
             strokeWidth: 2,
             outlineWidth: 2,
-            onLoadCharDataSuccess:this.onLoadCharDataSuccess.bind($c),
+            onLoadCharDataSuccess:this.onLoadCharDataSuccess.bind(this),
         }
 
         const writer = window.HanziWriter.create($c.$writer, $c.params.char, defaultOptions);
@@ -83,6 +83,7 @@ class PracticeCellHelper{
 
     // 分析svg结构，获取笔画路径元素列表
     get$listPath(writer){
+        writer=writer || this.writer;
         // const $char=writer.target;
         const $listG=writer.target.svg.querySelectorAll(`g`);
         const $outline=$listG[1]; // [1]是画之前显示的outline,最下层
@@ -141,7 +142,7 @@ class PracticeCellHelper{
     }
     // 当文字完全显示后，分情况处理（showCharacter，showOutline 控制是通过display:none，所以只改变透明度不可行）
     onLoadCharDataSuccess(data){
-        const $c=this;
+        const $c=this.$cell;
         $c.params=$c.params || {};
         const writer=$c.writer;
         // const listColor=["#aaa","#ddd","#eee"];
@@ -172,15 +173,77 @@ class PracticeCellHelper{
             }
         }
     }
+    drawPath(pathD,color="#0f0"){
+        const $path=document.body.querySelector(".word svg g g path");
+        const $pathCopy=$path.cloneNode(true);
+        $pathCopy.setAttribute("d", pathD);
+        $pathCopy.setAttribute("opacity", 1);
+        $pathCopy.setAttribute("stroke", "#0f0");
+        $pathCopy.setAttribute("clip-path", "");
+        $pathCopy.setAttribute("stroke-width", "10");
+        if(src=="user"){
+        $pathCopy.setAttribute("stroke-width", "2");
+        $pathCopy.setAttribute("stroke", "#f00");
+        document.body.querySelector(".word svg").appendChild($pathCopy);
+        }else document.body.querySelector(".word svg g g:last-child").appendChild($pathCopy);
+    }
     // function printStrokePoints(data) {
     //   var pointStrs = data.drawnPath.points.map((point) => `{x: ${point.x}, y: ${point.y}}`);
     //   console.log(`[${pointStrs.join(', ')}]`);
     // }
     // 当正确描红一笔时，计算分数
     onCorrectStroke(data) {
-        console.log(`Correct stroke drawn!`,data);
+        console.log(`Correct stroke drawn!`,data.drawnPath);
         const writer=this.writer;
         // const $char=this.getElementsByClassName("char")[0];
+        const listPath=this.get$listPath(writer);
+        const $currentPath=listPath[data.strokeNum];
+        const strCorrectPath=$currentPath.getAttribute("d");
+        // const $userPath=writer.target.svg.querySelector("path");
+        // const strUserPath=$userPath.getAttribute("d");
+        let strUserPath=data.drawnPath.pathString;
+
+
+        // //当前 svg.g.g
+        // // const $char=writer.target;
+        // const $listG=writer.target.svg.querySelectorAll(`g`);
+        // const $outline=$listG[1]; // [1]是画之前显示的outline,最下层
+        // // const $stroke=$listG[2]; //[2]是画完显示的strokeColor，最上层
+        // // Path -> SVG 的矩阵
+        // let matCurrentPath=$currentPath.getCTM();
+        // // SVG -> Path 的矩阵
+        // const matSVGToCurrentPath=matCurrentPath.inverse();
+        // // Path -> Group 的矩阵
+        // // const pathToGroup = matSVGToCurrentPath.multiply(pathToViewport);
+
+        // // 4. 应用转换
+        // // let transformedPoint = point.matrixTransform(pathToGroup);
+        // // 将用户路径也转换到和标准路径相同的坐标系下
+        
+        // 用户轨迹转成字体坐标
+        strUserPath="";
+        data.drawnPath.points.forEach((p,idx)=>{
+            let strCMD="L ";
+            if(idx==0)strCMD="M ";
+            strUserPath+=strCMD+p.x+" "+p.y+" ";
+        }) 
+        console.log("strCorrectPath",strCorrectPath);
+        console.log("strUserPath",strUserPath);
+        const res=scorePaths(strCorrectPath,strUserPath,128);
+
+
+        // 画出用户线
+        const strColor=gradientHSL('#ff0000', '#00ff00', Math.round(res));
+        const $userPath=$currentPath.cloneNode(true);
+        $userPath.setAttribute("clip-path", "");
+        $userPath.setAttribute("d", data.drawnPath.pathString);
+        // $userPath.setAttribute("opacity", 0.2);
+        $userPath.setAttribute("stroke", strColor);
+        $userPath.setAttribute("stroke-width", "5");
+        $userPath.style.opacity=0.7;
+        writer.target.svg.appendChild($userPath);
+
+        console.log("当前笔画评分：",res,strColor)
     }
     // 当错误描红，若干次，显示下一笔
     onMistakeStroke(data){
