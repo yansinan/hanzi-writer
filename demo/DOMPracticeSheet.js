@@ -9,6 +9,8 @@ class DOMPracticeSheet{
     listBlockWords=[];
     // 每一个练习块
     $listBlocks=[];
+    // 练习块的大小
+    sizeWriter=100;
 
     constructor($container,strInput){
         this.$container=$container;  
@@ -55,16 +57,28 @@ class DOMPracticeSheet{
         $word.appendChild(cellDFragment);
         return $word;
     }
+    setCellSize(inSize){
+        // 设置屏显大小
+        this.sizeWriter=inSize;
+        document.documentElement.style.setProperty("--size-writer", this.sizeWriter);
+        // 如果有练习块，更新每个块的大小
+        // if(this.$listBlocks.length>0){
+        //     this.$listBlocks.forEach(($block)=>{
+        //         $block.list$Writer.forEach(($c)=>{
+        //             debugger
+        //             $c.helper.writer.updateDimensions({width:this.sizeWriter,height:this.sizeWriter});
+        //         });
+        //     });
+        // }
+        return this.sizeWriter
+    }
     // 将每个块，初始化writer
     init(strInput,inSize=100){ //size px 为单位
         if(!strInput) {
             this.$container.innerHTML = ''; // 清空之前的内容
             throw new Error("请输入练习内容");
         }
-        // 设置屏显大小
-        // 批量应用主题
-        const sizeWriter=inSize;
-        document.documentElement.style.setProperty("--size-writer", sizeWriter);
+       this.sizeWriter=this.setCellSize(inSize);
 
         this.strInput=strInput;
         // 先分词
@@ -77,7 +91,7 @@ class DOMPracticeSheet{
             this.$listBlocks.push($block); 
             // 初始化writer
             $block.list$Writer.forEach(($c)=>{
-                $c.helper.initWriter(sizeWriter);
+                $c.helper.initWriter(this.sizeWriter);
             });
         });
         return this.listBlockWords;
