@@ -56,11 +56,15 @@ class DOMPracticeSheet{
         return $word;
     }
     // 将每个块，初始化writer
-    init(strInput){
+    init(strInput,inSize=100){ //size px 为单位
         if(!strInput) {
             this.$container.innerHTML = ''; // 清空之前的内容
             throw new Error("请输入练习内容");
         }
+        // 设置屏显大小
+        // 批量应用主题
+        const sizeWriter=inSize;
+        document.documentElement.style.setProperty("--size-writer", sizeWriter);
 
         this.strInput=strInput;
         // 先分词
@@ -73,7 +77,7 @@ class DOMPracticeSheet{
             this.$listBlocks.push($block); 
             // 初始化writer
             $block.list$Writer.forEach(($c)=>{
-                $c.helper.initWriter();
+                $c.helper.initWriter(sizeWriter);
             });
         });
         return this.listBlockWords;

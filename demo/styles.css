@@ -1,3 +1,7 @@
+:root {
+  --size-writer: 100;
+}
+
 body, html {
 	background: #f4f0ea;
 	margin: 0;
@@ -51,29 +55,27 @@ button, #target {
 	display: flex;
 	flex:0 0 0; /* 不允许增长或缩小，保持固定大小 */
 	justify-content:center; /* 保证格子均匀分布 */
-	margin-bottom: 75px; /* 行间距 */
-	margin-right: 150px;
-	height: 150px;
+	margin-bottom: calc(var(--size-writer) * 1px / 2); /* 行间距 */
+	margin-right: calc(var(--size-writer) * 1px); /* 列间距 */
+	/* height: var(--size-writer); 高度 */
 }
 .row {
 	flex:0 0 auto;
 	margin-right: 0;
 }
 .cell {
-	width: 150px; /* 固定宽度 */
-
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
 }
 .cell .pinyin {
-	flex: 0 0 75px;
+	flex: 0 0 calc(var(--size-writer) * 1px /2);
 	width: 100%;
 	text-align: center;
 	font-size: 24px;
 	color: #666;
-	height:75px;
-	line-height: 75px;
+	height:calc(var(--size-writer) * 1px / 2);
+	line-height: calc(var(--size-writer) * 1px / 2);
 }
 .row .cell .pinyin{
 	visibility: hidden;
@@ -83,13 +85,14 @@ button, #target {
 }
 .cell .char {
 	flex: none;
-	width: 100%; /* 固定宽度 */
-	height: 150px; /* 固定高度，保持正方形 */
 	background: url('grid-background.svg'); /* 使用外部 SVG 背景 */
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	border: solid 1px #444;
 	box-sizing: border-box; /* 包括边框在内计算大小 */
+
+	width: calc(var(--size-writer) * 1px); /* 固定宽度 */
+	height: calc(var(--size-writer) * 1px); /* 固定高度 */
 }
 .cell .char svg path.dashed{
     /* stroke-dasharray: 30, 40; */

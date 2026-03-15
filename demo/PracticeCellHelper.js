@@ -51,13 +51,13 @@ class PracticeCellHelper{
     // hanzi-writer实例
     writer=null;
 
-    initWriter(){
+    initWriter(size=150){
         const $c=this.$cell;
         $c.$writer=$c.getElementsByClassName("char")[0];
         // console.debug($c.params,$c.id);
         const defaultOptions = {
-            width: '150', // px
-            height: '150', // px
+            width: size.toString(), // px
+            height: size.toString(), // px
             radicalColor: '#166E16',
             // outlineColor:"#ff000000" ,
             // strokeColor:"#0f0",
