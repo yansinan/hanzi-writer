@@ -58,6 +58,7 @@ class PracticeCellHelper{
         const defaultOptions = {
             width: size.toString(), // px
             height: size.toString(), // px
+            padding: Math.round(size/9),
             radicalColor: '#166E16',
             // outlineColor:"#ff000000" ,
             // strokeColor:"#0f0",

@@ -46,19 +46,31 @@ import DOMPracticeSheet from "./DOMPracticeSheet.js";
 function generatePracticeSheet() {
     const input = document.querySelector('.js-char').value.trim();
     const $target = document.querySelector('#target');
+    const inputSize = document.querySelector('.js-char-size').value.trim();
 
     if(!practiceSheet) {
-        practiceSheet = new DOMPracticeSheet($target, input);
+        practiceSheet = new DOMPracticeSheet($target, input,inputSize || 100);
     }else{
-        practiceSheet.init(input);
+        practiceSheet.init(input,inputSize || 100);
     }
 }     // 初始生成字帖
 
-
+// function eInputChangeSize(){
+//     if(practiceSheet) {
+//         practiceSheet.setCellSize(inputSize);
+//     }    
+// }
 var practiceSheet=null;
 
 window.onload = function () {
-  var char = decodeURIComponent(window.location.hash.slice(1));
+  var char = decodeURIComponent(window.location.hash.slice(1)); // 从 URL 哈希中提取字符
+
+  // 设置页面格子大小，从 url参数中提取字符
+  const urlParams = new URLSearchParams(window.location.search);
+  const sizeInit = urlParams.get('size');
+  if(sizeInit){
+    document.querySelector('.js-char-size').value = sizeInit;
+  }
   if (char) {
     document.querySelector('.js-char').value = char;
   }
@@ -67,6 +79,7 @@ window.onload = function () {
 
   // 添加文本框输入完成事件监听
   document.querySelector('.js-char').addEventListener('blur', generatePracticeSheet);
+  // document.querySelector('.js-char-size').addEventListener('blur', eInputChangeSize);
 
   // document.querySelector('.js-toggle').addEventListener('click', function () {
   //   isCharVisible ? writer.hideCharacter() : writer.showCharacter();

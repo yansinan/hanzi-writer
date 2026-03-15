@@ -12,10 +12,10 @@ class DOMPracticeSheet{
     // 练习块的大小
     sizeWriter=100;
 
-    constructor($container,strInput){
+    constructor($container,strInput,inSize=100){
         this.$container=$container;  
         
-        this.init(strInput);
+        this.init(strInput,inSize);
 
     }
     // 生成块DOM实例，并返回
@@ -43,7 +43,7 @@ class DOMPracticeSheet{
         }  
         const cellDFragment = document.createDocumentFragment('div'); // 创建一个格子
 
-        for (let i = 0; i < (listStrChar.length>1?listStrChar.length:10); i++) { // 每行 10 个字  
+        for (let i = 0; i < (listStrChar.length>1?listStrChar.length:20); i++) { // 每行 10 个字  
             const strChar=listStrChar[i]?listStrChar[i]:listStrChar[0];
             const index=i;
             const id=`writer-${rowIndex}-${index}`; // 为每个格子设置唯一 ID
@@ -78,6 +78,9 @@ class DOMPracticeSheet{
             this.$container.innerHTML = ''; // 清空之前的内容
             throw new Error("请输入练习内容");
         }
+        // 先清空？？
+        // document.querySelector('#target').innerHTML = '';
+
        this.sizeWriter=this.setCellSize(inSize);
 
         this.strInput=strInput;
